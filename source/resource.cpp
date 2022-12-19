@@ -277,6 +277,7 @@ namespace C2ResourceServiceNX {
 			if (service->is_loader_thread_running) {
 				return;
 			}
+			// Wait out the io swap event.
 			if (service->io_swap_event != nullptr) { // inb4 you need to deref two more times before comparing against nullptr
 				nn::os::WaitEvent(service->io_swap_event);
 			}
@@ -289,10 +290,10 @@ namespace C2ResourceServiceNX {
 				nn::os::UnlockMutex(service->mutex);
 			}
 			service->is_updated = true;
-
+			// Guido, its time.
 			for (service->processing_file_idx_curr = 0; service->processing_file_idx_curr < service->processing_file_idx_count; service->processing_file_idx_curr++) {
 
-				uint32_t current_file_info_index = service->processing_file_idx_curr;
+				uint32_t current_file_info_index = service->processing_file_idx_start + service->processing_file_idx_curr;
 				FileData* current_file_data = nullptr;
 				uint64_t current_offset_in_folder = 0;
 
